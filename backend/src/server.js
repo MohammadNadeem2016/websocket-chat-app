@@ -3,12 +3,15 @@ import dotenv from "dotenv";
 import authRouter from "./routes/auth.route.js";
 import messageRouter from "./routes/message.route.js";
 import path from "path";
+import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT;
 
 const app = express();
+
+app.use(express.json());
 
 const __dirname = path.resolve();
 
@@ -23,6 +26,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, () =>
-  console.log("Chatify App is up and runing on PORT:", PORT),
-);
+app.listen(PORT, () => {
+  console.log("Chatify App is up and runing on PORT:", PORT);
+  connectDB();
+});
