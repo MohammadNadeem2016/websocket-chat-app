@@ -7,14 +7,13 @@ import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ENV } from "./lib/env.js";
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT;
 
-const app = express();
-
-app.use(express.json({ limit: "5*1024*1024" }));
+app.use(express.json({ limit: "5mb" }));
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 
@@ -31,7 +30,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Chatify App is up and runing on PORT:", PORT);
   connectDB();
 });

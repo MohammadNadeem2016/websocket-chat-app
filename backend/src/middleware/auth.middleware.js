@@ -1,4 +1,6 @@
 import { ENV } from "../lib/env.js";
+import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
   try {
@@ -8,11 +10,12 @@ export const protectRoute = async (req, res, next) => {
         .status(401)
         .json({ message: "Unauthorized - No token provided" });
 
-    const decode = jwt.verify(token, ENV.JWT_SECRET);
-    if (!decode)
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    if (!decoded)
       return res.status(401).json({ message: "Unauthorized - Invalid token" });
-
-    const user = await User.findById(decode.useId).select("-password");
+    console.log(decoded, "User Check");
+    const user = await User.findById(decoded.userID).select("-password");
+    console.log(user, "User Check");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     req.user = user;
